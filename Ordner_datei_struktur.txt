@@ -1,0 +1,27 @@
+lib/
+│
+├── main.dart                          ← Einstiegspunkt (inkl. Dateninitialisierung)
+│
+├── firebase_options.dart              ← Generiert von FlutterFire CLI
+│
+├── models/
+│   └── appointment_model.dart         ← Model für Termine
+│
+├── providers/
+│   └── appointment_provider.dart      ← Provider für Termine (falls für State Management)
+│
+├── services/
+│   ├── auth_service.dart              ← Firebase Authentifizierung
+│   ├── user_service.dart              ← Zugriff auf User-Rollen (Firestore)
+│   └── firebase_service.dart          ← Zentrale Daten-Initialisierung (→ wird in main verwendet)
+│
+├── screens/
+│   ├── termine_screen.dart            ← Hauptansicht für Termine
+│   └── login_screen.dart              ← Login-Screen für später
+│
+├── utils/
+│   ├── id_maps.dart                   ← Map für ProviderID & ServiceID → Name
+│   └── date_utils.dart                ← z. B. für Datum formatieren
+│
+└── widgets/
+    └── termin_card.dart              ← Einzelne Darstellung eines Termins (optional auslagerbar)
