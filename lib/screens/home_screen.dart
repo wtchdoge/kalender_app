@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
     final username = user?.displayName ?? user?.email ?? "Benutzer";
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hallo $username', style: TextStyle(color: AppColors.textLight)),
+        title: Text('Willkommen $username', style: TextStyle(color: AppColors.textLight)),
         actions: [
           TextButton.icon(
             icon: Icon(Icons.logout, color: AppColors.textLight),
