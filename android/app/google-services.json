@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "264697540507",
+    "firebase_url": "https://ks-kalender-app-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "ks-kalender-app",
+    "storage_bucket": "ks-kalender-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264697540507:android:d510b8c705ab0f2a1fbb3e",
+        "android_client_info": {
+          "package_name": "com.example.database_test_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdUyYPUNXyqJNLB6Wtu1xsf8KnL_kjXXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264697540507:android:692f18dc3059cfba1fbb3e",
+        "android_client_info": {
+          "package_name": "com.example.kalender_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdUyYPUNXyqJNLB6Wtu1xsf8KnL_kjXXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
