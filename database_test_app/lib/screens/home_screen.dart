@@ -1,5 +1,5 @@
 import 'my_appointments_screen.dart';
-import 'mitarbeiter_list_screen.dart';
+import 'employee_list_screen.dart';
 import 'package:database_test_app/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const MitarbeiterListScreen()),
+                    MaterialPageRoute(builder: (_) => const EmployeeListScreen()),
                   );
                 },
               ),

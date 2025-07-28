@@ -1,15 +1,13 @@
 // lib/screens/add_appointment_screen.dart
 
 import 'package:flutter/material.dart';
-import '../providers/mitarbeiter_provider.dart';
+import '../providers/employee_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/appointment_provider.dart';
 import '../services/appointment_service.dart';
-import '../widgets/address_fields.dart';
-import '../widgets/status_dropdown.dart';
-import '../widgets/service_dropdown.dart';
 import '../models/appointment_form_controller.dart';
-import 'package:database_test_app/utils/id_maps.dart' show serviceMap, statusList;
+import 'package:database_test_app/utils/id_maps.dart' show statusList;
+import '../widgets/appointment_form.dart';
 
 class AddAppointmentScreen extends StatefulWidget {
   final DateTime? selectedDate;
@@ -20,14 +18,6 @@ class AddAppointmentScreen extends StatefulWidget {
 }
 
 class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
-  List<DropdownMenuItem<String>> _buildMitarbeiterDropdownItems(List mitarbeiterList) {
-    return mitarbeiterList
-        .map<DropdownMenuItem<String>>((m) => DropdownMenuItem(
-              value: m.id,
-              child: Text(m.name),
-            ))
-        .toList();
-  }
   final _formKey = GlobalKey<FormState>();
   late AppointmentFormController formController;
 
@@ -120,104 +110,18 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
       appBar: AppBar(title: const Text('Neuer Termin')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Consumer<MitarbeiterProvider>(
-            builder: (context, mitarbeiterProvider, _) {
-              final mitarbeiterList = mitarbeiterProvider.mitarbeiter;
-              return ListView(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          formController.start == null
-                              ? 'Datum: wählen'
-                              : 'Datum: ${formController.start!.day.toString().padLeft(2, '0')}.${formController.start!.month.toString().padLeft(2, '0')}.${formController.start!.year.toString().substring(2)}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: _pickDate,
-                        child: const Text('Datum ändern'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          formController.start == null
-                              ? 'Start: wählen'
-                              : 'Start: ${formController.start!.hour.toString().padLeft(2, '0')}:${formController.start!.minute.toString().padLeft(2, '0')}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => _pickTime(true),
-                        child: const Text('Startzeit ändern'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          formController.end == null
-                              ? 'Ende: wählen'
-                              : 'Ende: ${formController.end!.hour.toString().padLeft(2, '0')}:${formController.end!.minute.toString().padLeft(2, '0')}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => _pickTime(false),
-                        child: const Text('Endzeit ändern'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: formController.providerId,
-                    items: _buildMitarbeiterDropdownItems(mitarbeiterList),
-                    onChanged: (val) => setState(() => formController.providerId = val),
-                    validator: (val) => val == null ? "Bitte Mitarbeiter wählen" : null,
-                    decoration: const InputDecoration(labelText: 'Mitarbeiter'),
-                  ),
-                  const SizedBox(height: 16),
-                  ServiceDropdown(
-                    value: formController.serviceId,
-                    serviceMap: serviceMap,
-                    onChanged: (val) => setState(() => formController.serviceId = val),
-                    validator: (val) => val == null ? "Bitte Dienstleistung wählen" : null,
-                  ),
-                  const SizedBox(height: 16),
-                  StatusDropdown(
-                    value: formController.status,
-                    statusList: statusList,
-                    onChanged: (val) => setState(() => formController.status = val),
-                    validator: (val) => val == null ? "Bitte Status wählen" : null,
-                  ),
-                  const SizedBox(height: 16),
-                  AddressFields(
-                    strasseController: formController.strasseController,
-                    hausnummerController: formController.hausnummerController,
-                    plzController: formController.plzController,
-                    ortController: formController.ortController,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: formController.kundennameController,
-                    decoration: const InputDecoration(labelText: 'Kunde'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _saveTermin,
-                    child: const Text("Termin speichern"),
-                  )
-                ],
-              );
-            },
-          ),
+        child: Consumer<EmployeeProvider>(
+          builder: (context, mitarbeiterProvider, _) {
+            final mitarbeiterList = mitarbeiterProvider.mitarbeiter;
+            return AppointmentForm(
+              formController: formController,
+              formKey: _formKey,
+              mitarbeiterList: mitarbeiterList,
+              onSave: _saveTermin,
+              onPickDate: _pickDate,
+              onPickTime: _pickTime,
+            );
+          },
         ),
       ),
     );

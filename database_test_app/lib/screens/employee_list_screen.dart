@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/mitarbeiter_provider.dart';
+import '../providers/employee_provider.dart';
 
-class MitarbeiterListScreen extends StatefulWidget {
-  const MitarbeiterListScreen({super.key});
+class EmployeeListScreen extends StatefulWidget {
+  const EmployeeListScreen({super.key});
 
   @override
-  State<MitarbeiterListScreen> createState() => _MitarbeiterListScreenState();
+  State<EmployeeListScreen> createState() => _EmployeeListScreenState();
 }
 
-class _MitarbeiterListScreenState extends State<MitarbeiterListScreen> {
+class _EmployeeListScreenState extends State<EmployeeListScreen> {
   bool _didLoad = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didLoad) {
-      context.read<MitarbeiterProvider>().syncMitarbeiter();
+      context.read<EmployeeProvider>().syncMitarbeiter();
       _didLoad = true;
     }
   }
@@ -25,7 +25,7 @@ class _MitarbeiterListScreenState extends State<MitarbeiterListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mitarbeiter')),
-      body: Consumer<MitarbeiterProvider>(
+      body: Consumer<EmployeeProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -45,7 +45,7 @@ class _MitarbeiterListScreenState extends State<MitarbeiterListScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<MitarbeiterProvider>().syncMitarbeiter(),
+        onPressed: () => context.read<EmployeeProvider>().syncMitarbeiter(),
         tooltip: 'Aus Firestore laden',
         child: const Icon(Icons.refresh),
       ),

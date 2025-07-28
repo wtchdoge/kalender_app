@@ -2,15 +2,12 @@ import 'package:database_test_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../models/appointment_form_controller.dart';
-import '../providers/mitarbeiter_provider.dart';
-import '../widgets/status_dropdown.dart';
+import '../providers/employee_provider.dart';
 import '../utils/id_maps.dart';
-import '../widgets/address_fields.dart';
 import '../services/appointment_service.dart';
 import 'package:provider/provider.dart';
 import '../providers/appointment_provider.dart';
-// import 'package:firebase_database/firebase_database.dart';
-
+import '../widgets/appointment_form.dart';
 
 
 
@@ -23,14 +20,7 @@ class EditAppointmentScreen extends StatefulWidget {
 }
 
 class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
-  List<DropdownMenuItem<String>> _buildMitarbeiterDropdownItems(List mitarbeiterList) {
-    return mitarbeiterList
-        .map<DropdownMenuItem<String>>((m) => DropdownMenuItem(
-              value: m.id,
-              child: Text(m.name),
-            ))
-        .toList();
-  }
+  final _formKey = GlobalKey<FormState>();
   late AppointmentFormController formController;
 
   @override
@@ -109,145 +99,74 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
       appBar: AppBar(title: const Text('Termin bearbeiten')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            Text(
-              dienstleistung,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            Text('Kategorie: $kategorie', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 12),
-            Row(
+        child: Consumer<EmployeeProvider>(
+          builder: (context, mitarbeiterProvider, _) {
+            final mitarbeiterList = mitarbeiterProvider.mitarbeiter;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  dienstleistung,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                Text('Kategorie: $kategorie', style: const TextStyle(fontSize: 18)),
+                const SizedBox(height: 12),
                 Expanded(
-                  child: Text(
-                    formController.start == null
-                        ? 'Datum: wählen'
-                        : 'Datum: ${formController.start!.day.toString().padLeft(2, '0')}.${formController.start!.month.toString().padLeft(2, '0')}.${formController.start!.year.toString().substring(2)}',
-                    style: const TextStyle(fontSize: 18),
+                  child: AppointmentForm(
+                    formController: formController,
+                    formKey: _formKey,
+                    mitarbeiterList: mitarbeiterList,
+                    onSave: _saveTermin,
+                    onPickDate: _pickDate,
+                    onPickTime: _pickTime,
+                    saveButtonText: 'Speichern',
                   ),
                 ),
-                TextButton(
-                  onPressed: _pickDate,
-                  child: const Text('Datum ändern'),
-                ),
               ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    formController.start == null
-                        ? 'Start: wählen'
-                        : 'Start: ${formController.start!.hour.toString().padLeft(2, '0')}:${formController.start!.minute.toString().padLeft(2, '0')}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _pickTime(true),
-                  child: const Text('Startzeit ändern'),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    formController.end == null
-                        ? 'Ende: wählen'
-                        : 'Ende: ${formController.end!.hour.toString().padLeft(2, '0')}:${formController.end!.minute.toString().padLeft(2, '0')}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _pickTime(false),
-                  child: const Text('Endzeit ändern'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Consumer<MitarbeiterProvider>(
-              builder: (context, mitarbeiterProvider, _) {
-                final mitarbeiterList = mitarbeiterProvider.mitarbeiter;
-                final validProviderIds = mitarbeiterList.map((m) => m.id).toSet();
-                final currentProviderId = validProviderIds.contains(formController.providerId)
-                    ? formController.providerId
-                    : null;
-                return DropdownButtonFormField<String>(
-                  value: currentProviderId,
-                  items: _buildMitarbeiterDropdownItems(mitarbeiterList),
-                  onChanged: (val) => setState(() => formController.providerId = val),
-                  validator: (val) => val == null ? "Bitte Mitarbeiter wählen" : null,
-                  decoration: const InputDecoration(labelText: 'Mitarbeiter'),
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            StatusDropdown(
-              value: formController.status,
-              statusList: statusList,
-              onChanged: (val) => setState(() => formController.status = val),
-              validator: (val) => val == null ? "Bitte Status wählen" : null,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: formController.kundennameController,
-              decoration: const InputDecoration(labelText: 'Kundename'),
-            ),
-            const SizedBox(height: 16),
-            AddressFields(
-              strasseController: formController.strasseController,
-              hausnummerController: formController.hausnummerController,
-              plzController: formController.plzController,
-              ortController: formController.ortController,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                final newAppointment = {
-                  'bookingStart': formController.start?.toIso8601String(),
-                  'bookingEnd': formController.end?.toIso8601String(),
-                  'providerId': formController.providerId,
-                  'serviceId': widget.appointment.serviceId,
-                  'status': formController.status,
-                  'created': widget.appointment.created.toIso8601String(),
-                  'strasse': formController.strasseController.text,
-                  'hausnummer': formController.hausnummerController.text,
-                  'plz': formController.plzController.text,
-                  'ort': formController.ortController.text,
-                  'kundenname': formController.kundennameController.text.isEmpty ? 'Unbekannt' : formController.kundennameController.text,
-                  'userId': null, // Optional: userId falls vorhanden
-                };
-
-                final success = await AppointmentService.updateAppointment(widget.appointment.id, newAppointment);
-
-                if (success) {
-                  try {
-                    Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
-                  } catch (_) {}
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Änderungen gespeichert!'),
-                      backgroundColor: AppColors.accent,
-                    ),
-                  );
-                  Navigator.of(context).pop(); // Edit-Screen schließen
-                  Navigator.of(context).pop(); // Details-Screen schließen, zurück zur Liste
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Fehler beim Speichern!'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-
-              },
-              child: const Text('Speichern'),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  Future<void> _saveTermin() async {
+    final newAppointment = {
+      'bookingStart': formController.start?.toIso8601String(),
+      'bookingEnd': formController.end?.toIso8601String(),
+      'providerId': formController.providerId,
+      'serviceId': widget.appointment.serviceId,
+      'status': formController.status,
+      'created': widget.appointment.created.toIso8601String(),
+      'strasse': formController.strasseController.text,
+      'hausnummer': formController.hausnummerController.text,
+      'plz': formController.plzController.text,
+      'ort': formController.ortController.text,
+      'kundenname': formController.kundennameController.text.isEmpty ? 'Unbekannt' : formController.kundennameController.text,
+      'userId': null, // Optional: userId falls vorhanden
+    };
+
+    final success = await AppointmentService.updateAppointment(widget.appointment.id, newAppointment);
+
+    if (success) {
+      try {
+        Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
+      } catch (_) {}
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Änderungen gespeichert!'),
+          backgroundColor: AppColors.accent,
+        ),
+      );
+      Navigator.of(context).pop(); // Edit-Screen schließen
+      Navigator.of(context).pop(); // Details-Screen schließen, zurück zur Liste
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Fehler beim Speichern!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

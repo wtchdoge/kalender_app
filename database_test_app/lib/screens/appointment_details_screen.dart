@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
-// ...existing code...
 import 'package:intl/intl.dart';
 import 'edit_appointment_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,7 +27,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
     final kundenname = appointment.kundenname ?? 'Unbekannt';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Appointment Details')),
+      appBar: AppBar(title: const Text('Termin Details')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -133,6 +132,26 @@ class AppointmentDetailsScreen extends StatelessWidget {
                 }
               },
               child: const Text('Löschen'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () async {
+                // Status auf 'abgeschlossen' setzen
+                await AppointmentService.updateAppointmentStatus(appointment.id, 'abgeschlossen');
+                if (context.mounted) {
+                  try {
+                    Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
+                  } catch (_) {}
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Termin als abgeschlossen markiert!'), backgroundColor: Colors.green),
+                  );
+                }
+              },
+              child: const Text('Als abgeschlossen markieren'),
             ),
           ],
         ),

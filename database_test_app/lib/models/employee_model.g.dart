@@ -1,29 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'mitarbeiter_model.dart';
+part of 'employee_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MitarbeiterAdapter extends TypeAdapter<Mitarbeiter> {
+class EmployeeAdapter extends TypeAdapter<Employee> {
   @override
   final int typeId = 0;
 
   @override
-  Mitarbeiter read(BinaryReader reader) {
+  Employee read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Mitarbeiter(
+    return Employee(
       id: fields[0] as String,
       name: fields[1] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Mitarbeiter obj) {
+  void write(BinaryWriter writer, Employee obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
@@ -38,7 +38,7 @@ class MitarbeiterAdapter extends TypeAdapter<Mitarbeiter> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MitarbeiterAdapter &&
+      other is EmployeeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

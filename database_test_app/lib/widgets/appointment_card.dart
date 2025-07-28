@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
 import 'package:provider/provider.dart';
-import '../models/mitarbeiter_model.dart';
-import '../providers/mitarbeiter_provider.dart';
+import '../models/employee_model.dart';
+import '../providers/employee_provider.dart';
 import 'package:intl/intl.dart';
 import '../screens/appointment_details_screen.dart';
 
@@ -16,10 +16,10 @@ class AppointmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dienstleistung = serviceMap[appointment.serviceId]?['dienstleistung'] ?? 'Unbekannt';
-    final mitarbeiterProvider = Provider.of<MitarbeiterProvider>(context);
+    final mitarbeiterProvider = Provider.of<EmployeeProvider>(context);
     final mitarbeiter = mitarbeiterProvider.mitarbeiter.firstWhere(
       (m) => m.id == appointment.providerId,
-      orElse: () => Mitarbeiter(id: appointment.providerId, name: 'Unbekannt'),
+      orElse: () => Employee(id: appointment.providerId, name: 'Unbekannt'),
     ).name;
     final date = DateFormat('dd.MM.yy').format(appointment.bookingStart);
     final startTime = DateFormat('HH:mm').format(appointment.bookingStart);

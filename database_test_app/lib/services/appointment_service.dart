@@ -108,4 +108,11 @@ class AppointmentService {
       return false;
     }
   }
+
+  static Future<void> updateAppointmentStatus(String appointmentId, String status) async {
+    await FirebaseFirestore.instance
+        .collection('appointments')
+        .doc(appointmentId)
+        .update({'status': status});
+  }
 }

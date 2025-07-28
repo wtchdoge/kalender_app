@@ -3,10 +3,10 @@ import 'package:database_test_app/screens/auth_wrapper.dart';
 import 'services/firebase_service.dart';
 import 'package:provider/provider.dart';
 import 'providers/appointment_provider.dart';
-import 'providers/mitarbeiter_provider.dart';
+import 'providers/employee_provider.dart';
 import 'package:database_test_app/theme/app_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'models/mitarbeiter_model.dart';
+import 'models/employee_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -15,12 +15,12 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  Hive.registerAdapter(MitarbeiterAdapter());
+  Hive.registerAdapter(EmployeeAdapter());
   await FirebaseService.initializeApp();
   final app = MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AppointmentProvider()),
-      ChangeNotifierProvider(create: (_) => MitarbeiterProvider()),
+      ChangeNotifierProvider(create: (_) => EmployeeProvider()),
     ],
     child: MyApp(),
   );
@@ -29,7 +29,7 @@ void main() async {
   Future.delayed(Duration.zero, () {
     final context = navigatorKey.currentContext;
     if (context != null) {
-      Provider.of<MitarbeiterProvider>(context, listen: false).syncMitarbeiter();
+      Provider.of<EmployeeProvider>(context, listen: false).syncMitarbeiter();
     }
   });
 }
