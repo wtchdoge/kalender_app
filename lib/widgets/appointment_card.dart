@@ -5,7 +5,7 @@ import '../utils/id_maps.dart';
 import 'package:provider/provider.dart';
 import '../models/employee_model.dart';
 import '../providers/employee_provider.dart';
-import 'package:intl/intl.dart';
+import '../utils/date_utils.dart' as AppDateUtils;
 import '../screens/appointment_details_screen.dart';
 
 class AppointmentCard extends StatelessWidget {
@@ -21,9 +21,9 @@ class AppointmentCard extends StatelessWidget {
       (m) => m.id == appointment.providerId,
       orElse: () => Employee(id: appointment.providerId, name: 'Unbekannt'),
     ).name;
-    final date = DateFormat('dd.MM.yy').format(appointment.bookingStart);
-    final startTime = DateFormat('HH:mm').format(appointment.bookingStart);
-    final endTime = DateFormat('HH:mm').format(appointment.bookingEnd);
+    final date = AppDateUtils.DateUtils.formatDate(appointment.bookingStart);
+    final startTime = AppDateUtils.DateUtils.formatTime(appointment.bookingStart, label: 'Start');
+    final endTime = AppDateUtils.DateUtils.formatTime(appointment.bookingEnd, label: 'Ende');
 
     return Card(
       margin: const EdgeInsets.all(8),

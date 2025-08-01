@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/availability_details_screen.dart';
 import '../utils/id_maps.dart';
+import '../utils/date_utils.dart' as AppDateUtils;
 
 class AvailabilityCard extends StatelessWidget {
   final List<String> mitarbeiterIds;
@@ -10,7 +11,7 @@ class AvailabilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+    final dateStr = AppDateUtils.DateUtils.formatDate(date);
     final mitarbeiterNamen = mitarbeiterIds
         .map((id) => providerMap[id] ?? 'Unbekannt')
         .toList();

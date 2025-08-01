@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
+import '../utils/app_snackbar.dart';
 import 'package:intl/intl.dart';
 import 'edit_appointment_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -125,9 +126,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
                       Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
                     } catch (_) {}
                     Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Appointment deleted!'), backgroundColor: Colors.red),
-                    );
+                    AppSnackBar.show(context, 'Appointment deleted!', color: Colors.red);
                   }
                 }
               },
@@ -146,9 +145,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
                     Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
                   } catch (_) {}
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Termin als abgeschlossen markiert!'), backgroundColor: Colors.green),
-                  );
+                  AppSnackBar.show(context, 'Termin als abgeschlossen markiert!', color: Colors.green);
                 }
               },
               child: const Text('Als abgeschlossen markieren'),

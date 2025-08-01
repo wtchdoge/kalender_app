@@ -4,6 +4,7 @@ import '../widgets/address_fields.dart';
 import '../widgets/status_dropdown.dart';
 import '../widgets/service_dropdown.dart';
 import 'package:database_test_app/utils/id_maps.dart' show serviceMap, statusList;
+import '../utils/date_utils.dart' as AppDateUtils;
 
 class AppointmentForm extends StatelessWidget {
   final AppointmentFormController formController;
@@ -46,9 +47,7 @@ class AppointmentForm extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  formController.start == null
-                      ? 'Datum: wählen'
-                      : 'Datum: ${formController.start!.day.toString().padLeft(2, '0')}.${formController.start!.month.toString().padLeft(2, '0')}.${formController.start!.year.toString().substring(2)}',
+                  AppDateUtils.DateUtils.formatDate(formController.start),
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
@@ -62,9 +61,7 @@ class AppointmentForm extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  formController.start == null
-                      ? 'Start: wählen'
-                      : 'Start: ${formController.start!.hour.toString().padLeft(2, '0')}:${formController.start!.minute.toString().padLeft(2, '0')}',
+                  AppDateUtils.DateUtils.formatTime(formController.start, label: 'Start'),
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
@@ -78,9 +75,7 @@ class AppointmentForm extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  formController.end == null
-                      ? 'Ende: wählen'
-                      : 'Ende: ${formController.end!.hour.toString().padLeft(2, '0')}:${formController.end!.minute.toString().padLeft(2, '0')}',
+                  AppDateUtils.DateUtils.formatTime(formController.end, label: 'Ende'),
                   style: const TextStyle(fontSize: 18),
                 ),
               ),

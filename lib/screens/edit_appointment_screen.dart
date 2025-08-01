@@ -1,4 +1,5 @@
 import 'package:database_test_app/theme/app_theme.dart';
+import '../utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../models/appointment_form_controller.dart';
@@ -113,21 +114,11 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
       try {
         Provider.of<AppointmentProvider>(context, listen: false).fetchAppointments();
       } catch (_) {}
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Änderungen gespeichert!'),
-          backgroundColor: AppColors.accent,
-        ),
-      );
+      AppSnackBar.show(context, 'Änderungen gespeichert!', color: AppColors.accent);
       Navigator.of(context).pop(); // Edit-Screen schließen
       Navigator.of(context).pop(); // Details-Screen schließen, zurück zur Liste
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Fehler beim Speichern!'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppSnackBar.show(context, 'Fehler beim Speichern!', color: Colors.red);
     }
   }
 }
