@@ -63,45 +63,22 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
   }
 
   Future<void> _pickDate() async {
-    final picked = await showDatePicker(
+    await AppointmentFormController.pickDate(
       context: context,
-      initialDate: formController.start ?? DateTime.now(),
+      controller: formController,
       firstDate: DateTime(2024),
       lastDate: DateTime(2030),
     );
-    if (picked == null) return;
-    setState(() {
-      if (formController.start != null) {
-        formController.start = DateTime(picked.year, picked.month, picked.day, formController.start!.hour, formController.start!.minute);
-      } else {
-        formController.start = DateTime(picked.year, picked.month, picked.day, 0, 0);
-      }
-      if (formController.end != null) {
-        formController.end = DateTime(picked.year, picked.month, picked.day, formController.end!.hour, formController.end!.minute);
-      } else {
-        formController.end = DateTime(picked.year, picked.month, picked.day, 0, 0);
-      }
-    });
+    setState(() {});
   }
 
   Future<void> _pickTime(bool isStart) async {
-    final initialTime = isStart
-        ? (formController.start != null ? TimeOfDay(hour: formController.start!.hour, minute: formController.start!.minute) : TimeOfDay.now())
-        : (formController.end != null ? TimeOfDay(hour: formController.end!.hour, minute: formController.end!.minute) : TimeOfDay.now());
-    final picked = await showTimePicker(
+    await AppointmentFormController.pickTime(
       context: context,
-      initialTime: initialTime,
+      controller: formController,
+      isStart: isStart,
     );
-    if (picked == null) return;
-    setState(() {
-      if (isStart) {
-        final date = formController.start ?? DateTime.now();
-        formController.start = DateTime(date.year, date.month, date.day, picked.hour, picked.minute);
-      } else {
-        final date = formController.end ?? formController.start ?? DateTime.now();
-        formController.end = DateTime(date.year, date.month, date.day, picked.hour, picked.minute);
-      }
-    });
+    setState(() {});
   }
 
   @override

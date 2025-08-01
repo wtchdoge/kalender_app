@@ -49,52 +49,26 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
   }
 
   Future<void> _pickDate() async {
-    final picked = await showDatePicker(
+    await AppointmentFormController.pickDate(
       context: context,
-      initialDate: formController.start ?? DateTime.now(),
+      controller: formController,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     );
-    if (picked == null) return;
-    setState(() {
-      if (formController.start != null) {
-        formController.start = DateTime(picked.year, picked.month, picked.day, formController.start!.hour, formController.start!.minute);
-      } else {
-        formController.start = DateTime(picked.year, picked.month, picked.day, 0, 0);
-      }
-      if (formController.end != null) {
-        formController.end = DateTime(picked.year, picked.month, picked.day, formController.end!.hour, formController.end!.minute);
-      } else {
-        formController.end = DateTime(picked.year, picked.month, picked.day, 0, 0);
-      }
-    });
+    setState(() {});
   }
 
   Future<void> _pickTime(bool isStart) async {
-    final initialTime = isStart
-        ? (formController.start != null ? TimeOfDay(hour: formController.start!.hour, minute: formController.start!.minute) : TimeOfDay.now())
-        : (formController.end != null ? TimeOfDay(hour: formController.end!.hour, minute: formController.end!.minute) : TimeOfDay.now());
-    final picked = await showTimePicker(
+    await AppointmentFormController.pickTime(
       context: context,
-      initialTime: initialTime,
+      controller: formController,
+      isStart: isStart,
     );
-    if (picked == null) return;
-    setState(() {
-      if (isStart) {
-        final date = formController.start ?? DateTime.now();
-        formController.start = DateTime(date.year, date.month, date.day, picked.hour, picked.minute);
-      } else {
-        final date = formController.end ?? formController.start ?? DateTime.now();
-        formController.end = DateTime(date.year, date.month, date.day, picked.hour, picked.minute);
-      }
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final dienstleistung = serviceMap[widget.appointment.serviceId]?['dienstleistung'] ?? 'Unbekannt';
-    final kategorie = serviceMap[widget.appointment.serviceId]?['kategorie'] ?? 'Unbekannt';
-
     return Scaffold(
       appBar: AppBar(title: const Text('Termin bearbeiten')),
       body: Padding(
@@ -102,27 +76,14 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
         child: Consumer<EmployeeProvider>(
           builder: (context, mitarbeiterProvider, _) {
             final mitarbeiterList = mitarbeiterProvider.mitarbeiter;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  dienstleistung,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                Text('Kategorie: $kategorie', style: const TextStyle(fontSize: 18)),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: AppointmentForm(
-                    formController: formController,
-                    formKey: _formKey,
-                    mitarbeiterList: mitarbeiterList,
-                    onSave: _saveTermin,
-                    onPickDate: _pickDate,
-                    onPickTime: _pickTime,
-                    saveButtonText: 'Speichern',
-                  ),
-                ),
-              ],
+            return AppointmentForm(
+              formController: formController,
+              formKey: _formKey,
+              mitarbeiterList: mitarbeiterList,
+              onSave: _saveTermin,
+              onPickDate: _pickDate,
+              onPickTime: _pickTime,
+              saveButtonText: 'Speichern',
             );
           },
         ),
