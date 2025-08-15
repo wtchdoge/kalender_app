@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
 import '../utils/app_snackbar.dart';
-import 'package:intl/intl.dart';
+import '../utils/date_utils.dart' as app_date_utils;
 import 'edit_appointment_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/appointment_service.dart';
@@ -19,8 +19,8 @@ class AppointmentDetailsScreen extends StatelessWidget {
     final dienstleistung = serviceMap[appointment.serviceId]?['dienstleistung'] ?? 'Unbekannt';
     final kategorie = serviceMap[appointment.serviceId]?['kategorie'] ?? 'Unbekannt';
     final mitarbeiter = providerMap[appointment.providerId] ?? 'Unbekannt';
-    final startTime = DateFormat('HH:mm').format(appointment.bookingStart);
-    final endTime = DateFormat('HH:mm').format(appointment.bookingEnd);
+    final startTime = app_date_utils.DateUtils.formatTime(appointment.bookingStart, label: '');
+    final endTime = app_date_utils.DateUtils.formatTime(appointment.bookingEnd, label: '');
     final strasse = appointment.strasse ?? 'Unbekannt';
     final hausnummer = appointment.hausnummer ?? '';
     final plz = appointment.plz ?? '';
@@ -40,11 +40,11 @@ class AppointmentDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Date: ${DateFormat('dd.MM.yy').format(appointment.bookingStart)}',
+              'Date: ${app_date_utils.DateUtils.formatDate(appointment.bookingStart)}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             Text(
-              'Time: $startTime - $endTime',
+              'Time: ${startTime.replaceFirst(':' , '').trim()} - ${endTime.replaceFirst(':' , '').trim()}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             Text('Category: $kategorie', style: const TextStyle(fontSize: 18)),

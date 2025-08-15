@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:database_test_app/widgets/absent_employees_list.dart';
+import '../utils/date_utils.dart' as app_date_utils;
 
 class AvailabilityDetailsScreen extends StatelessWidget {
   final List<String> names;
@@ -9,7 +10,7 @@ class AvailabilityDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+    final dateStr = app_date_utils.DateUtils.formatDate(date);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Abwesenheitsdetails'),
