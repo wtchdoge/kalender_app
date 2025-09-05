@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/app_snackbar.dart';
 import 'package:database_test_app/theme/app_theme.dart';
 
 class SaveOnSecondTapButton extends StatefulWidget {
@@ -44,12 +45,7 @@ class _SaveOnSecondTapButtonState extends State<SaveOnSecondTapButton> {
           onPressed: () async {
             if (!isActive) {
               // Hinweis anzeigen
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Bitte Tage auswählen'),
-                  backgroundColor: AppColors.primary,
-                ),
-              );
+              AppSnackBar.show(context, 'Bitte Tage auswählen', color: AppColors.primary);
               widget.onStartSelection?.call();
             } else {
               await widget.onSave(widget.selectedDays);

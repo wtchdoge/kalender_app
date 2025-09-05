@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/availability_details_screen.dart';
 import '../utils/id_maps.dart';
 import '../utils/date_utils.dart' as AppDateUtils;
+import '../utils/string_utils.dart';
 
 class AvailabilityCard extends StatelessWidget {
   final List<String> mitarbeiterIds;
@@ -12,9 +13,9 @@ class AvailabilityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateStr = AppDateUtils.DateUtils.formatDate(date);
-    final mitarbeiterNamen = mitarbeiterIds
-        .map((id) => providerMap[id] ?? 'Unbekannt')
-        .toList();
+  final mitarbeiterNamen = mitarbeiterIds
+    .map((id) => StringUtils.displayOrUnknown(providerMap[id]))
+    .toList();
     // Zeige maximal 2 Namen, danach "..."
     final displayNames = mitarbeiterNamen.length > 2 ? mitarbeiterNamen.sublist(0, 2) : mitarbeiterNamen;
     final hasMore = mitarbeiterNamen.length > 2;

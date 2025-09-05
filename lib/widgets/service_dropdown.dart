@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/dropdown_utils.dart';
 
 class ServiceDropdown extends StatelessWidget {
   final int? value;
@@ -20,12 +21,13 @@ class ServiceDropdown extends StatelessWidget {
       value: value,
       decoration: const InputDecoration(labelText: 'Dienstleistung'),
       isExpanded: true,
-      items: serviceMap.entries
-          .map((e) => DropdownMenuItem(
-                value: e.key,
-                child: Text("${e.value['dienstleistung']} - ${e.value['kategorie']}"),
-              ))
-          .toList(),
+      items: DropdownUtils.fromMap(
+        serviceMap.map((k, v) => MapEntry(k.toString(), v)),
+        labelBuilder: (entry) => "${entry.value['dienstleistung']} - ${entry.value['kategorie']}",
+      ).map((item) => DropdownMenuItem<int>(
+        value: int.tryParse(item.value ?? ''),
+  child: item.child,
+      )).toList(),
       onChanged: onChanged,
       validator: validator,
     );

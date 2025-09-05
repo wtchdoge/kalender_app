@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
 import '../utils/app_snackbar.dart';
+import '../utils/string_utils.dart';
 import '../utils/date_utils.dart' as app_date_utils;
 import 'edit_appointment_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../utils/address_utils.dart';
+import '../utils/app_labels.dart';
 import '../services/appointment_service.dart';
 import 'package:provider/provider.dart';
 import '../providers/appointment_provider.dart';
@@ -16,19 +18,19 @@ class AppointmentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dienstleistung = serviceMap[appointment.serviceId]?['dienstleistung'] ?? 'Unbekannt';
-    final kategorie = serviceMap[appointment.serviceId]?['kategorie'] ?? 'Unbekannt';
-    final mitarbeiter = providerMap[appointment.providerId] ?? 'Unbekannt';
-    final startTime = app_date_utils.DateUtils.formatTime(appointment.bookingStart, label: '');
-    final endTime = app_date_utils.DateUtils.formatTime(appointment.bookingEnd, label: '');
-    final strasse = appointment.strasse ?? 'Unbekannt';
-    final hausnummer = appointment.hausnummer ?? '';
-    final plz = appointment.plz ?? '';
-    final ort = appointment.ort ?? '';
-    final kundenname = appointment.kundenname ?? 'Unbekannt';
+  final dienstleistung = StringUtils.displayOrUnknown(serviceMap[appointment.serviceId]?['dienstleistung']);
+  final kategorie = StringUtils.displayOrUnknown(serviceMap[appointment.serviceId]?['kategorie']);
+  final mitarbeiter = StringUtils.displayOrUnknown(providerMap[appointment.providerId]);
+  final startTime = app_date_utils.DateUtils.formatTime(appointment.bookingStart, label: '');
+  final endTime = app_date_utils.DateUtils.formatTime(appointment.bookingEnd, label: '');
+  final strasse = StringUtils.displayOrUnknown(appointment.strasse);
+  final hausnummer = StringUtils.displayOrUnknown(appointment.hausnummer, fallback: '');
+  final plz = StringUtils.displayOrUnknown(appointment.plz, fallback: '');
+  final ort = StringUtils.displayOrUnknown(appointment.ort, fallback: '');
+  final kundenname = StringUtils.displayOrUnknown(appointment.kundenname);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Termin Details')),
+  appBar: AppBar(title: const Text(AppLabels.service)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -40,25 +42,30 @@ class AppointmentDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Date: ${app_date_utils.DateUtils.formatDate(appointment.bookingStart)}',
+              '${AppLabels.date}: ${app_date_utils.DateUtils.formatDate(appointment.bookingStart)}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             Text(
-              'Time: ${startTime.replaceFirst(':' , '').trim()} - ${endTime.replaceFirst(':' , '').trim()}',
+              '${AppLabels.time}: ${startTime.replaceFirst(':' , '').trim()} - ${endTime.replaceFirst(':' , '').trim()}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
-            Text('Category: $kategorie', style: const TextStyle(fontSize: 18)),
-            Text('Employee: $mitarbeiter', style: const TextStyle(fontSize: 18)),
-            Text('Status: ${appointment.status}', style: const TextStyle(fontSize: 18)),
-            Text('Customer: $kundenname', style: const TextStyle(fontSize: 18)),
+            Text('${AppLabels.category}: $kategorie', style: const TextStyle(fontSize: 18)),
+            Text('${AppLabels.employee}: $mitarbeiter', style: const TextStyle(fontSize: 18)),
+            Text('${AppLabels.status}: ${appointment.status}', style: const TextStyle(fontSize: 18)),
+            Text('${AppLabels.customer}: $kundenname', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
             const SizedBox(height: 16),
-            Text('Address', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(AppLabels.address, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            Text('Street: $strasse', style: const TextStyle(fontSize: 18)),
-            Text('House Number: ${hausnummer.isNotEmpty ? hausnummer : 'Unknown'}', style: const TextStyle(fontSize: 18)),
-            Text('ZIP: ${plz.isNotEmpty ? plz : 'Unknown'}', style: const TextStyle(fontSize: 18)),
-            Text('City: ${ort.isNotEmpty ? ort : 'Unknown'}', style: const TextStyle(fontSize: 18)),
+            Text(
+              AddressUtils.formatAddress(
+                street: strasse,
+                houseNumber: hausnummer,
+                zip: plz,
+                city: ort,
+              ),
+              style: const TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,
@@ -67,20 +74,18 @@ class AppointmentDetailsScreen extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.map),
-                    tooltip: 'Open in Google Maps',
+                    tooltip: AppLabels.searchInGoogleMaps,
                     onPressed: () async {
-                      final addressQuery = Uri.encodeComponent('$strasse $hausnummer, $plz $ort');
-                      final url = 'https://www.google.com/maps/search/?api=1&query=$addressQuery';
-                      if (await canLaunchUrl(Uri.parse(url))) {
-                        await launchUrl(
-                          Uri.parse(url),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
+                      await AddressUtils.openInGoogleMaps(
+                        street: strasse,
+                        houseNumber: hausnummer,
+                        zip: plz,
+                        city: ort,
+                      );
                     },
                   ),
                   const SizedBox(width: 4),
-                  const Text('Search in Google Maps', style: TextStyle(fontSize: 16)),
+                  const Text(AppLabels.searchInGoogleMaps, style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),

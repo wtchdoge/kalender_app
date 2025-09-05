@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../utils/string_utils.dart';
 import 'package:database_test_app/models/appointment_model.dart';
 import 'package:database_test_app/utils/id_maps.dart';
 
@@ -16,7 +17,7 @@ class AvailabilityService {
   }) async {
     // Hole den Benutzernamen aus der users-Collection
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final username = userDoc.data()?['username'] ?? 'Unbekannt';
+  final username = StringUtils.displayOrUnknown(userDoc.data()?['username']);
     final dateKey = '${day.day.toString().padLeft(2, '0')}.${day.month.toString().padLeft(2, '0')}.${day.year.toString()}';
     final abwesenheitRef = FirebaseFirestore.instance.collection('abwesenheit').doc(dateKey);
     await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -96,7 +97,7 @@ class AvailabilityService {
   }) async {
     // Hole den Benutzernamen aus der users-Collection
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final username = userDoc.data()?['username'] ?? 'Unbekannt';
+  final username = StringUtils.displayOrUnknown(userDoc.data()?['username']);
     final dateKey = '${day.day.toString().padLeft(2, '0')}.${day.month.toString().padLeft(2, '0')}.${day.year.toString()}';
     final abwesenheitRef = FirebaseFirestore.instance.collection('abwesenheit').doc(dateKey);
     await FirebaseFirestore.instance.runTransaction((transaction) async {

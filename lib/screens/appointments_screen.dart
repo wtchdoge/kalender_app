@@ -1,15 +1,15 @@
 import 'package:database_test_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/widgets.dart';
 import '../providers/appointment_provider.dart';
 import '../widgets/appointment_card.dart';
 import 'add_appointment_screen.dart';
+import '../utils/string_utils.dart';
 import '../utils/id_maps.dart';
 
 // ...existing code...
 class AppointmentsScreen extends StatefulWidget {
-  const AppointmentsScreen({Key? key}) : super(key: key);
+  const AppointmentsScreen({super.key});
 
   @override
   State<AppointmentsScreen> createState() => _AppointmentsScreenState();
@@ -59,7 +59,7 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
     final appointments = Provider.of<AppointmentProvider>(context).appointments;
 
     final filteredAppointments = appointments.where((a) {
-      final mitarbeiterName = providerMap[a.providerId] ?? '';
+  final mitarbeiterName = StringUtils.displayOrUnknown(providerMap[a.providerId], fallback: '');
       final mitarbeiterMatch = selectedMitarbeiter == null || selectedMitarbeiter == mitarbeiterName;
       final statusMatch = selectedStatus == null || selectedStatus == a.status;
       return mitarbeiterMatch && statusMatch;

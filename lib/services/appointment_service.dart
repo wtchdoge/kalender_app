@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/appointment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../utils/app_snackbar.dart';
 
 class AppointmentService {
   /// Fügt einen neuen Termin hinzu, inklusive Validierung und UserId-Check. Zeigt Fehler per SnackBar an.
@@ -20,17 +21,13 @@ class AppointmentService {
     required BuildContext context,
   }) async {
     if (!formKey.currentState!.validate() || start == null || end == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bitte alle Felder korrekt ausfüllen!'), backgroundColor: Colors.red),
-      );
+  AppSnackBar.show(context, 'Bitte alle Felder korrekt ausfüllen!', color: Colors.red);
       return false;
     }
 
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nicht eingeloggt!'), backgroundColor: Colors.red),
-      );
+  AppSnackBar.show(context, 'Nicht eingeloggt!', color: Colors.red);
       return false;
     }
 
@@ -106,7 +103,7 @@ class AppointmentService {
       return true;
     } catch (e) {
       return false;
-    }
+    } 
   }
 
   static Future<void> updateAppointmentStatus(String appointmentId, String status) async {

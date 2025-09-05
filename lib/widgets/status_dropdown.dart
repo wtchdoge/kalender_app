@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/dropdown_utils.dart';
 
 class StatusDropdown extends StatelessWidget {
   final String? value;
@@ -19,12 +20,7 @@ class StatusDropdown extends StatelessWidget {
     return DropdownButtonFormField<String>(
       value: value,
       decoration: const InputDecoration(labelText: 'Status'),
-      items: statusList
-          .map((status) => DropdownMenuItem(
-                value: status,
-                child: Text(status),
-              ))
-          .toList(),
+  items: DropdownUtils.fromStringList(statusList),
       onChanged: onChanged,
       validator: validator,
     );

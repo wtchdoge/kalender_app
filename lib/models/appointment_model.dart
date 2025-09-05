@@ -1,4 +1,5 @@
 // lib/models/appointment_model.dart
+import '../utils/string_utils.dart';
 class Appointment {
   final String id;
   final int serviceId;
@@ -32,16 +33,16 @@ class Appointment {
     return Appointment(
       id: firebaseId,
       serviceId: int.tryParse(json['serviceId'].toString()) ?? 0,
-       providerId: json['providerId']?.toString() ?? '',
+      providerId: StringUtils.displayOrUnknown(json['providerId']?.toString(), fallback: ''),
       bookingStart: DateTime.parse(json['bookingStart']),
       bookingEnd: DateTime.parse(json['bookingEnd']),
-      status: json['status'] ?? '',
+      status: StringUtils.displayOrUnknown(json['status'], fallback: ''),
       created: DateTime.parse(json['created']),
-      strasse: json['strasse'] ?? 'Unbekannt',
-      hausnummer: json['hausnummer'] ?? '',
-      plz: json['plz'] ?? '',
-      ort: json['ort'] ?? '',
-      kundenname: json['kundenname'] ?? 'Unbekannt',
+      strasse: StringUtils.displayOrUnknown(json['strasse']),
+      hausnummer: StringUtils.displayOrUnknown(json['hausnummer'], fallback: ''),
+      plz: StringUtils.displayOrUnknown(json['plz'], fallback: ''),
+      ort: StringUtils.displayOrUnknown(json['ort'], fallback: ''),
+      kundenname: StringUtils.displayOrUnknown(json['kundenname']),
     );
   }
 

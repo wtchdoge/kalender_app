@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../utils/app_snackbar.dart';
 import 'package:database_test_app/theme/app_theme.dart';
 import 'package:database_test_app/screens/add_appointment_screen.dart';
 import 'package:database_test_app/screens/calendar_screen.dart' show SelectionMode;
@@ -78,9 +79,7 @@ class CalendarActionBar extends StatelessWidget {
                 onSave: (List<DateTime> days) async {
                   final userId = FirebaseAuth.instance.currentUser?.uid;
                   if (userId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Nicht eingeloggt!'), backgroundColor: AppColors.accent),
-                    );
+                    AppSnackBar.show(context, 'Nicht eingeloggt!', color: AppColors.accent);
                     return;
                   }
                   for (final day in days) {
@@ -90,9 +89,7 @@ class CalendarActionBar extends StatelessWidget {
                   if (onResetSelection != null) onResetSelection!();
                   // Nach dem Speichern Auswahlmodus beenden
                   if (onStartSelection != null) onStartSelection!(SelectionMode.viewOnly);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Abwesende Tage wurden gespeichert.'), backgroundColor: AppColors.accent),
-                  );
+                  AppSnackBar.show(context, 'Abwesende Tage wurden gespeichert.', color: AppColors.accent);
                 },
               ),
             ),
@@ -110,9 +107,7 @@ class CalendarActionBar extends StatelessWidget {
                 onSave: (List<DateTime> days) async {
                   final userId = FirebaseAuth.instance.currentUser?.uid;
                   if (userId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Nicht eingeloggt!'), backgroundColor: Colors.blue),
-                    );
+                    AppSnackBar.show(context, 'Nicht eingeloggt!', color: Colors.blue);
                     return;
                   }
                   for (final day in days) {
@@ -122,9 +117,7 @@ class CalendarActionBar extends StatelessWidget {
                   if (onResetSelection != null) onResetSelection!();
                   // Nach dem Speichern Auswahlmodus beenden
                   if (onStartSelection != null) onStartSelection!(SelectionMode.viewOnly);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Anwesende Tage wurden gespeichert.'), backgroundColor: Colors.blue),
-                  );
+                  AppSnackBar.show(context, 'Anwesende Tage wurden gespeichert.', color: Colors.blue);
                 },
               ),
             ),

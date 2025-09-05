@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import '../utils/string_utils.dart';
 part 'employee_model.g.dart';
 
 @HiveType(typeId: 0)
@@ -9,7 +10,6 @@ class Employee extends HiveObject {
   String name;
 
   Employee({required this.id, required this.name});
-
   factory Employee.fromJson(Map<String, dynamic> json, String id) =>
-      Employee(id: id, name: json['mitarbeitername'] ?? '');
+      Employee(id: id, name: StringUtils.displayOrUnknown(json['mitarbeitername'], fallback: ''));
 }

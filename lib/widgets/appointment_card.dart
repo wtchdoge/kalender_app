@@ -4,6 +4,7 @@ import '../models/appointment_model.dart';
 import '../utils/id_maps.dart';
 import 'package:provider/provider.dart';
 import '../models/employee_model.dart';
+import '../utils/string_utils.dart';
 import '../providers/employee_provider.dart';
 import '../utils/date_utils.dart' as AppDateUtils;
 import '../screens/appointment_details_screen.dart';
@@ -15,7 +16,7 @@ class AppointmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dienstleistung = serviceMap[appointment.serviceId]?['dienstleistung'] ?? 'Unbekannt';
+  final dienstleistung = StringUtils.displayOrUnknown(serviceMap[appointment.serviceId]?['dienstleistung']);
     final mitarbeiterProvider = Provider.of<EmployeeProvider>(context);
     final mitarbeiter = mitarbeiterProvider.mitarbeiter.firstWhere(
       (m) => m.id == appointment.providerId,
